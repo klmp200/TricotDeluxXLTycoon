@@ -1,3 +1,5 @@
 {
-	"IMAGES_DIR": "ressources/images/"
+	"IMAGES_DIR": "ressources/images/",
+	"SONS_DIR": "ressources/sons/",
+	"VIDEOS_DIR": "ressources/videos/"
 }

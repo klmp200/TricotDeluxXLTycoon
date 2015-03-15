@@ -1,5 +1,4 @@
 # -*- coding: utf8 -*-
-import json
 import pygame
 from pygame.locals import *
 
@@ -9,16 +8,17 @@ class Vaisseau():
 		Classe pour fabriquer des vaisseaux
 	"""
 
-	def __init__(self, taille=(0,0), image="", position=(0,0)):
+	def __init__(self, taille=(0,0), image="", position=(0,0), SETTINGS={}):
+		self.SETTINGS = SETTINGS
 		self.taille = taille
-		self.image = image
+		self.image = self.SETTINGS['IMAGES_DIR'] + image
 		self.position = position
 		self.changerImage()
 
 	def changerImage(self, taille="", image=""):
 		if taille != "" and image != "":
 			self.taille = taille
-			self.image = image
+			self.image = SETTINGS['IMAGES_DIR'] + image
 
 		self.vaisseau = pygame.image.load(self.image).convert_alpha()
 		self.vaisseau = pygame.transform.scale(self.vaisseau, self.taille)
@@ -52,3 +52,19 @@ class Vaisseau():
 		self.position = (x, y)
 		self.afficher(interface.fenetre, self.position)
 
+class Joueur(Vaisseau):
+
+	"""
+		Pour fabriquer un joueur, hérite de la classe vaisseaux
+	"""
+
+	def __init__(self, taille=(0,0), image="", position=(0,0), SETTINGS={}):
+		Vaisseau.__init__(self, taille, image, position, SETTINGS)
+		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'wut.ogg')
+
+	def afficher(self, fenetre, position=""):
+		self.sonDeplacement.play()
+		Vaisseau.afficher(self, fenetre, position)
+
+	def tirer(self):
+		pass
