@@ -11,6 +11,7 @@ from Core.videos import *
 
 TITRE = "Tricot Delux XL Tycoon"
 ICONE = "pelote.jpg"
+RESOLUTION = (1200, 800)
 
 
 # Importation des paramètres
@@ -23,7 +24,7 @@ pygame.init()
 intro = Video('intro.mpg', SETTINGS, TITRE, ICONE, "2001_Odysee_de_l_espace.ogg")
 intro.jouer()
 
-fenetre = Interface((1200, 800), "saucisses.jpg", TITRE, ICONE, SETTINGS)
+fenetre = Interface(RESOLUTION, "saucisses.jpg", TITRE, ICONE, SETTINGS)
 fenetre.afficher()
 
 #Chargement de la banane

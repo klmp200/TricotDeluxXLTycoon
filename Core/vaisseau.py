@@ -66,5 +66,48 @@ class Joueur(Vaisseau):
 		self.sonDeplacement.play()
 		Vaisseau.afficher(self, fenetre, position)
 
-	def tirer(self):
-		pass
+	def tirer(self, fenetre, tailleInterface):
+		missile = Missile("pizza.png", (self.position[0]+self.taille[0], self.position[1]), (100,100), "piou.ogg", self.SETTINGS)
+		missile.avancer(fenetre, 'left', tailleInterface)
+
+class Missile():
+	"""
+		Pour fabriquer des missiles
+	"""
+
+	def __init__(self, sprite, position, taille, son, SETTINGS):
+		self.SETTINGS = SETTINGS
+		self.sprite = self.SETTINGS['IMAGES_DIR'] + sprite
+		self.position = position
+		self.taille = taille
+		self.son = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + son)
+
+		self.missile = pygame.image.load(self.sprite).convert_alpha()
+		self.missile = pygame.transform.scale(self.missile, self.taille)
+
+	def afficher(self, fenetre, position=""):
+		if position != "":
+			self.position = position
+
+		fenetre.blit(self.missile, self.position)
+		pygame.display.flip()
+		self.son.play()
+
+	def avancer(self, fenetre, origin, tailleInterface):
+		x = self.position[0]
+		y = self.position[1]
+
+		continuer = True
+		while continuer:
+			if origin == "left":
+				x += 10
+
+			elif origin == "right":
+				x += -10
+
+			self.afficher(fenetre, (x,y))
+
+			if x <= 0 or x >= tailleInterface[0]:
+				continuer = False
+
+

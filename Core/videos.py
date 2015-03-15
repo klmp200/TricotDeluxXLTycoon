@@ -9,7 +9,8 @@ class Video():
 		Permet d'afficher des vidéos en plein écran
 	"""
 
-	def __init__(self, video, SETTINGS, titre="", icone="", son="", FPS=60):
+	def __init__(self, video, SETTINGS, titre="", icone="", son="", FPS=60, taille=(640, 480)):
+		self.taille= taille
 		self.FPS = FPS
 		self.SETTINGS = SETTINGS
 		self.video = pygame.movie.Movie(SETTINGS['VIDEOS_DIR'] + video)

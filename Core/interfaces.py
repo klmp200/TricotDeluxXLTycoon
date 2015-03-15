@@ -12,7 +12,7 @@ class Interface():
 		self.SETTINGS = SETTINGS
 		self. taille = taille
 		self.image = SETTINGS['IMAGES_DIR'] + image
-		self.fenetre = pygame.display.set_mode(taille, RESIZABLE)
+		self.fenetre = pygame.display.set_mode(taille)
 		self.titre = titre
 		self.background = ""
 		self.musique = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'retour_futur.ogg')
@@ -44,6 +44,7 @@ class Interface():
 					continuer = 0      #On arrête la boucle
 
 				mouvement = ""
+				tirer = False
 
 				if event.type == KEYDOWN:
 					if event.key == K_DOWN:	#Si "flèche bas"
@@ -58,5 +59,10 @@ class Interface():
 					if event.key == K_LEFT:
 						mouvement = "LEFT"
 
+					if event.key == K_SPACE:
+						tirer = True
+
 					self.fenetre.blit(self.background, (0,0))
 					vaisseau.deplacer(self, mouvement)
+					if tirer:
+						vaisseau.tirer(self.fenetre, self.taille)
