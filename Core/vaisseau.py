@@ -15,6 +15,33 @@ class Vaisseau():
 		self.position = position
 		self.changerImage()
 
+		self.repliques = [
+			"Voilà qui tranche la question",
+			"T'avais faim hein ?",
+			"BANANA !!!!",
+			"Bêêêê t'es mort !!!!",
+			"get reckt LMAO EZ SCRUB !",
+			"Miaou ? Ta geule miaou !",
+			"Sponsorisé par Dominos Pizza",
+			"Sponsorisé pas Pizza Hut",
+			"Tu ne passera pas !",
+			"J'espère que tu avais faim",
+			"Même ma grand mère se serait mieux débrouillé !",
+			"Tien, attrape !",
+			"Trouve toi une autre prairie",
+			"On se retrouvera en enfer !",
+			"C'est pas ma guerre !!!!",
+			"Ceci est une punchline",
+			"Ca rentre comme papa dans maman",
+			"KAMEHAMEPIZAAAAAAAAAA !!!!!!!",
+			"Tu la voulait supplément fromage ?",
+			"Plus rapide qu'un livreur de pizza traditionnel",
+			"Toc Toc, c'est le livreur de pizza",
+			"Qui a demandé une livreur de pizza ?",
+			"C'est pour qui la quatre fromages ?",
+			"C'est bien ici la livraison ?",
+		]
+
 	def changerImage(self, taille="", image=""):
 		if taille != "" and image != "":
 			self.taille = taille
@@ -69,6 +96,22 @@ class Joueur(Vaisseau):
 	def tirer(self, fenetre, tailleInterface):
 		missile = Missile("pizza.png", (self.position[0]+self.taille[0], self.position[1]), (100,100), "piou.ogg", self.SETTINGS)
 		missile.avancer(fenetre, 'left', tailleInterface)
+
+class Ennemi(Vaisseau):
+	"""
+		Pour fabriquer des ennemies
+	"""
+	def __init__(self, taille=(0,0), image="", position=(0,0), SETTINGS={}):
+		Vaisseau.__init__(self, taille, image, position, SETTINGS)
+		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'la.ogg')
+
+	def afficher(self, fenetre, position=""):
+		self.sonDeplacement.play()
+		Vaisseau.afficher(self, fenetre, position)
+
+	def tirer(self, fenetre, tailleInterface):
+		missile = Missile("chat.png", (self.position[0]+self.taille[0], self.position[1]), (100,100), "beeh.ogg", self.SETTINGS)
+		missile.avancer(fenetre, 'right', tailleInterface)
 
 class Missile():
 	"""
