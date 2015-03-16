@@ -21,10 +21,11 @@ json_data.close()
 
 pygame.init()
 
+
 intro = Video('intro.mpg', SETTINGS, TITRE, ICONE, "2001_Odysee_de_l_espace.ogg")
 intro.jouer()
 
-fenetre = Interface(RESOLUTION, "saucisses.jpg", TITRE, ICONE, SETTINGS)
+fenetre = Jeu(RESOLUTION, "saucisses.jpg", TITRE, ICONE, SETTINGS, 'retour_futur.ogg')
 fenetre.afficher()
 
 #Chargement de la banane

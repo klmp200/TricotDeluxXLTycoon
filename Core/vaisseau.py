@@ -15,32 +15,7 @@ class Vaisseau():
 		self.position = position
 		self.changerImage()
 
-		self.repliques = [
-			"Voilà qui tranche la question",
-			"T'avais faim hein ?",
-			"BANANA !!!!",
-			"Bêêêê t'es mort !!!!",
-			"get reckt LMAO EZ SCRUB !",
-			"Miaou ? Ta geule miaou !",
-			"Sponsorisé par Dominos Pizza",
-			"Sponsorisé pas Pizza Hut",
-			"Tu ne passera pas !",
-			"J'espère que tu avais faim",
-			"Même ma grand mère se serait mieux débrouillé !",
-			"Tien, attrape !",
-			"Trouve toi une autre prairie",
-			"On se retrouvera en enfer !",
-			"C'est pas ma guerre !!!!",
-			"Ceci est une punchline",
-			"Ca rentre comme papa dans maman",
-			"KAMEHAMEPIZAAAAAAAAAA !!!!!!!",
-			"Tu la voulait supplément fromage ?",
-			"Plus rapide qu'un livreur de pizza traditionnel",
-			"Toc Toc, c'est le livreur de pizza",
-			"Qui a demandé une livreur de pizza ?",
-			"C'est pour qui la quatre fromages ?",
-			"C'est bien ici la livraison ?",
-		]
+		self.missiles = []
 
 	def changerImage(self, taille="", image=""):
 		if taille != "" and image != "":
@@ -77,7 +52,21 @@ class Vaisseau():
 			pass
 
 		self.position = (x, y)
-		self.afficher(interface.fenetre, self.position)
+
+	def tirer(self, son="", image=""):
+		self.missiles.append(Missile(image, (self.position[0]+self.taille[0], self.position[1]), (100,100), son, self.SETTINGS))
+
+	def checkMissiles(self, fenetre, tailleInterface, direction):
+		i = 0
+		to_pop = []
+		for missile in self.missiles:
+			missile.avancer(fenetre, direction, tailleInterface)
+			if missile.vie == False:
+				to_pop.append(i)
+
+		for crap in to_pop:
+			self.missiles.pop(crap)
+
 
 class Joueur(Vaisseau):
 
@@ -89,13 +78,20 @@ class Joueur(Vaisseau):
 		Vaisseau.__init__(self, taille, image, position, SETTINGS)
 		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'wut.ogg')
 
-	def afficher(self, fenetre, position=""):
-		self.sonDeplacement.play()
-		Vaisseau.afficher(self, fenetre, position)
+		self.punchline = SETTINGS['PUNCHLINES']
+		for punchline in self.punchline:
+			punchline = punchline.encode('utf-8')
 
-	def tirer(self, fenetre, tailleInterface):
-		missile = Missile("pizza.png", (self.position[0]+self.taille[0], self.position[1]), (100,100), "piou.ogg", self.SETTINGS)
-		missile.avancer(fenetre, 'left', tailleInterface)
+	def checkMissiles(self, fenetre, tailleInterface, direction="left"):
+		Vaisseau.checkMissiles(self, fenetre, tailleInterface, direction)
+
+	def deplacer(self, interface, direction=""):
+		self.sonDeplacement.play()
+		Vaisseau.deplacer(self, interface, direction)
+
+	def tirer(self, son="piou.ogg", image="pizza.png"):
+		Vaisseau.tirer(self, son, image)
+
 
 class Ennemi(Vaisseau):
 	"""
@@ -105,13 +101,17 @@ class Ennemi(Vaisseau):
 		Vaisseau.__init__(self, taille, image, position, SETTINGS)
 		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'la.ogg')
 
-	def afficher(self, fenetre, position=""):
-		self.sonDeplacement.play()
-		Vaisseau.afficher(self, fenetre, position)
 
-	def tirer(self, fenetre, tailleInterface):
-		missile = Missile("chat.png", (self.position[0]+self.taille[0], self.position[1]), (100,100), "beeh.ogg", self.SETTINGS)
-		missile.avancer(fenetre, 'right', tailleInterface)
+	def checkMissiles(self, fenetre, tailleInterface, direction="right"):
+		Vaisseau.checkMissiles(self, fenetre, tailleInterface, direction)
+
+	def deplacer(self, interface, direction=""):
+		self.sonDeplacement.play()
+		Vaisseau.deplacer(self, interface, direction)
+
+	def tirer(self, son="beeh.ogg", image="chat.png"):
+		Vaisseau.tirer(self, son, image)
+
 
 class Missile():
 	"""
@@ -124,9 +124,11 @@ class Missile():
 		self.position = position
 		self.taille = taille
 		self.son = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + son)
+		self.vie = True
 
 		self.missile = pygame.image.load(self.sprite).convert_alpha()
 		self.missile = pygame.transform.scale(self.missile, self.taille)
+		self.son.play()
 
 	def afficher(self, fenetre, position=""):
 		if position != "":
@@ -134,23 +136,18 @@ class Missile():
 
 		fenetre.blit(self.missile, self.position)
 		pygame.display.flip()
-		self.son.play()
 
 	def avancer(self, fenetre, origin, tailleInterface):
 		x = self.position[0]
 		y = self.position[1]
 
-		continuer = True
-		while continuer:
-			if origin == "left":
-				x += 10
+		if origin == "left":
+			x += 10
 
-			elif origin == "right":
-				x += -10
+		elif origin == "right":
+			x += -10
 
-			self.afficher(fenetre, (x,y))
+		self.afficher(fenetre, (x,y))
 
-			if x <= 0 or x >= tailleInterface[0]:
-				continuer = False
-
-
+		if x <= 0 or x >= tailleInterface[0]:
+			self.vie = False
