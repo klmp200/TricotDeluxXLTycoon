@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 import pygame
 import random
+import time
 from pygame.locals import *
 from Core.vaisseau import Ennemi
 
@@ -20,6 +21,7 @@ class Interface():
 		self.musique = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + musique)
 		self.changerBackground()
 		pygame.display.set_caption(self.titre)
+		self.font = pygame.font.SysFont("comicsansms", 70)
 		if icone != "":
 			icone = pygame.image.load(self.SETTINGS['IMAGES_DIR'] + icone)
 			pygame.display.set_icon(icone)
@@ -59,6 +61,10 @@ class Jeu(Interface):
 
 		self.liste_ennemies = []
 
+		self.punchline = SETTINGS['PUNCHLINES']
+		for punchline in self.punchline:
+			punchline = punchline.encode('utf-8')
+
 	def bougerBords(self):
 		vitesse = 15
 		if self.bordure_haut_pos[0] < -self.bordure_taille[0]:
@@ -76,6 +82,10 @@ class Jeu(Interface):
 		# Bordure mouvante
 		self.fenetre.blit(self.bordure_image, (self.bordure_bas_pos[0],0))
 		self.fenetre.blit(self.bordure_image, (self.bordure_bas_pos[0],self.taille[1]-50))
+
+	def afficherVie(self, vaisseau):
+		text = self.font.render("Vies : "+ str(vaisseau.pv), True, (229, 90, 0))
+		self.fenetre.blit(text, (0,0))
 
 	def generateEnnemi(self):
 		limite = 3
@@ -105,6 +115,11 @@ class Jeu(Interface):
 			i += 1
 		for crap in to_pop:
 			self.liste_ennemies.pop(crap)
+			
+			text = self.font.render(random.choice(self.punchline), True, (random.randint(0,255), random.randint(0,255), random.randint(0,255)))
+			self.fenetre.blit(text, (0,random.randint(0,self.taille[1]-70)))
+			pygame.display.flip()
+			time.sleep(1)
 
 
 	def pause(self, vaisseau):
@@ -139,12 +154,13 @@ class Jeu(Interface):
 					if tirer:
 						vaisseau.tirer()
 
-					self.generateEnnemi()
 
 			self.fenetre.blit(self.background, (0,0))
+			self.generateEnnemi()
 
 			vaisseau.afficher(self.fenetre)
 			self.bougerBords()
+			self.afficherVie(vaisseau)
 
 			self.afficherEnnemi()
 			self.actionEnnemi()
@@ -152,7 +168,7 @@ class Jeu(Interface):
 
 			vaisseau.checkMissiles(self.fenetre, self.taille, victimes = self.liste_ennemies)
 			self.supprimerEnnemi()
-			
+
 			pygame.display.flip()
 
 			if vaisseau.vie == False:

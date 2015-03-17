@@ -102,10 +102,6 @@ class Joueur(Vaisseau):
 		Vaisseau.__init__(self, taille, image, position, SETTINGS, vitesse, pv)
 		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'wut.ogg')
 
-		self.punchline = SETTINGS['PUNCHLINES']
-		for punchline in self.punchline:
-			punchline = punchline.encode('utf-8')
-
 	def checkMissiles(self, fenetre, tailleInterface, direction="left", victimes = []):
 		Vaisseau.checkMissiles(self, fenetre, tailleInterface, direction, victimes)
 
