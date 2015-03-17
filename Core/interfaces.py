@@ -1,6 +1,8 @@
 # -*- coding: utf8 -*-
 import pygame
+import random
 from pygame.locals import *
+from Core.vaisseau import Ennemi
 
 class Interface():
 
@@ -55,29 +57,64 @@ class Jeu(Interface):
 		self.fenetre.blit(self.bordure_image, (0,0))
 		self.fenetre.blit(self.bordure_image, (0,self.taille[1]-50))
 
+		self.liste_ennemies = []
+
 	def bougerBords(self):
+		vitesse = 15
 		if self.bordure_haut_pos[0] < -self.bordure_taille[0]:
+			# Réinitialise la position de la bordure mouvante
 			self.bordure_haut_pos = (0, self.bordure_haut_pos[1])
 			self.bordure_bas_pos = (0, self.bordure_bas_pos[1])
 		else:
-			self.bordure_haut_pos = (self.bordure_haut_pos[0]-10, self.bordure_haut_pos[1])
-			self.bordure_bas_pos = (self.bordure_bas_pos[0]-10, self.bordure_bas_pos[1])
+			# Donne une nouvelle position à la bordure
+			self.bordure_haut_pos = (self.bordure_haut_pos[0]-vitesse, self.bordure_haut_pos[1])
+			self.bordure_bas_pos = (self.bordure_bas_pos[0]-vitesse, self.bordure_bas_pos[1])
 
-
+		# Bordure qui se colle à la fin de la bordure mouvante
+		self.fenetre.blit(self.bordure_image, (self.bordure_taille[0]+self.bordure_bas_pos[0],0))
+		self.fenetre.blit(self.bordure_image, (self.bordure_taille[0]+self.bordure_bas_pos[0],self.taille[1]-50))
+		# Bordure mouvante
 		self.fenetre.blit(self.bordure_image, (self.bordure_bas_pos[0],0))
 		self.fenetre.blit(self.bordure_image, (self.bordure_bas_pos[0],self.taille[1]-50))
 
 	def generateEnnemi(self):
-		pass
+		limite = 3
+		aleatoire1 = random.randint(1,60)
+		aleatoire2 = random.randint(1,100)
+		if aleatoire2 < aleatoire1 and len(self.liste_ennemies) < limite:
+			self.liste_ennemies.append(Ennemi((200,100), "mouton.png", (random.randint(int(self.taille[1]/2),self.taille[1]+200),random.randint(0,self.taille[0]-100)), self.SETTINGS))
+
+	def afficherEnnemi(self):
+		for ennemi in self.liste_ennemies:
+			ennemi.afficher(self.fenetre)
+
+	def actionEnnemi(self):
+		for ennemi in self.liste_ennemies:
+			ennemi.action(self)
+
+	def tirerEnnemi(self, vaisseau):
+		for ennemi in self.liste_ennemies:
+			ennemi.checkMissiles(self.fenetre, self.taille, victimes = [vaisseau])
+
+	def supprimerEnnemi(self):
+		i = 0
+		to_pop = []
+		for ennemi in self.liste_ennemies:
+			if ennemi.vie == False:
+				to_pop.append(i)
+			i += 1
+		for crap in to_pop:
+			self.liste_ennemies.pop(crap)
+
 
 	def pause(self, vaisseau):
 		Interface.pause(self)
 
-		continuer = 1
+		continuer = True
 		while continuer:
 			for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 				if event.type == QUIT:     #Si un de ces événements est de type QUIT
-					continuer = 0      #On arrête la boucle
+					continuer = False     #On arrête la boucle
 
 				mouvement = ""
 				tirer = False
@@ -102,9 +139,21 @@ class Jeu(Interface):
 					if tirer:
 						vaisseau.tirer()
 
+					self.generateEnnemi()
+
 			self.fenetre.blit(self.background, (0,0))
 
+			vaisseau.afficher(self.fenetre)
 			self.bougerBords()
 
-			vaisseau.afficher(self.fenetre)
-			vaisseau.checkMissiles(self.fenetre, self.taille)
+			self.afficherEnnemi()
+			self.actionEnnemi()
+			self.tirerEnnemi(vaisseau)
+
+			vaisseau.checkMissiles(self.fenetre, self.taille, victimes = self.liste_ennemies)
+			self.supprimerEnnemi()
+			
+			pygame.display.flip()
+
+			if vaisseau.vie == False:
+				continuer = False

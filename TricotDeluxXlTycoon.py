@@ -29,13 +29,8 @@ fenetre = Jeu(RESOLUTION, "saucisses.jpg", TITRE, ICONE, SETTINGS, 'retour_futur
 fenetre.afficher()
 
 #Chargement de la banane
-banane = Joueur((200,100), "banane.png", (0,int(fenetre.taille[1]/2-100)), SETTINGS)
+banane = Joueur((200,100), "banane.png", (0,int(fenetre.taille[1]/2-100)), SETTINGS, vitesse=20, pv = 10)
 banane.afficher(fenetre.fenetre)
 
-"""
-#Test mouton
-mouton = Ennemi((200,100), "mouton.png", (fenetre.taille[0]-200,int(fenetre.taille[1]/2-100)), SETTINGS)
-mouton.afficher(fenetre.fenetre)
-"""
 
 fenetre.pause(banane)
