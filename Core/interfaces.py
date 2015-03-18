@@ -2,6 +2,7 @@
 import pygame
 import random
 import time
+import sys
 from pygame.locals import *
 from Core.vaisseau import Ennemi
 
@@ -34,9 +35,9 @@ class Interface():
 		self.background = pygame.image.load(self.image).convert()
 		self.background = pygame.transform.scale(self.background, self.taille)
 
-	def afficher(self):
+	def afficherBack(self):
 		self.fenetre.blit(self.background, (0,0))
-		pygame.display.flip()
+
 
 	def pause(self):
 
@@ -46,6 +47,16 @@ class Interface():
 		pygame.key.set_repeat(30, 30)
 
 		# Ajouter la boucle
+
+class menu(Interface):
+
+	def __init__(self, taille=(640, 480), image="", titre="", icone="", SETTINGS={}, musique=""):
+		Interface.__init__(self, taille, image, titre, icone, SETTINGS, musique)
+		self.choix = [
+			(True, "Jouer", ["Facile", "Normal", "Hard", "Dubstep"]),
+			(True, "Crédits", ["Réalisé et produit par :", "Antoine Bartuccio", "(KLMP200)", "klmp200.net"]),
+			(False, "Extra", ["Flappy Banana"]),
+		]
 
 class Jeu(Interface):
 
@@ -59,11 +70,17 @@ class Jeu(Interface):
 		self.fenetre.blit(self.bordure_image, (0,0))
 		self.fenetre.blit(self.bordure_image, (0,self.taille[1]-50))
 
+		self.score = 0
+
 		self.liste_ennemies = []
 
 		self.punchline = SETTINGS['PUNCHLINES']
 		for punchline in self.punchline:
 			punchline = punchline.encode('utf-8')
+
+		self.deadPunchline = SETTINGS['MORT']
+		for deadPunchline in self.deadPunchline:
+			deadPunchline = deadPunchline.encode('utf-8')
 
 	def bougerBords(self):
 		vitesse = 15
@@ -84,8 +101,12 @@ class Jeu(Interface):
 		self.fenetre.blit(self.bordure_image, (self.bordure_bas_pos[0],self.taille[1]-50))
 
 	def afficherVie(self, vaisseau):
-		text = self.font.render("Vies : "+ str(vaisseau.pv), True, (229, 90, 0))
+		text = self.font.render("Vies : "+ str(vaisseau.pv), True, (229, 0, 0))
 		self.fenetre.blit(text, (0,0))
+
+	def afficherScore(self):
+		text = self.font.render("Score : "+ str(self.score), True, (104, 0, 255))
+		self.fenetre.blit(text, (int(self.taille[0]/2),0))
 
 	def generateEnnemi(self):
 		limite = 3
@@ -115,6 +136,7 @@ class Jeu(Interface):
 			i += 1
 		for crap in to_pop:
 			self.liste_ennemies.pop(crap)
+			self.score += 50
 			
 			text = self.font.render(random.choice(self.punchline), True, (random.randint(0,255), random.randint(0,255), random.randint(0,255)))
 			self.fenetre.blit(text, (0,random.randint(0,self.taille[1]-70)))
@@ -130,6 +152,7 @@ class Jeu(Interface):
 			for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 				if event.type == QUIT:     #Si un de ces événements est de type QUIT
 					continuer = False     #On arrête la boucle
+					sys.exit()
 
 				mouvement = ""
 				tirer = False
@@ -155,12 +178,13 @@ class Jeu(Interface):
 						vaisseau.tirer()
 
 
-			self.fenetre.blit(self.background, (0,0))
+			self.afficherBack()
 			self.generateEnnemi()
 
 			vaisseau.afficher(self.fenetre)
 			self.bougerBords()
 			self.afficherVie(vaisseau)
+			self.afficherScore()
 
 			self.afficherEnnemi()
 			self.actionEnnemi()
@@ -173,3 +197,27 @@ class Jeu(Interface):
 
 			if vaisseau.vie == False:
 				continuer = False
+
+		continuer = True
+		explosion = pygame.image.load(self.SETTINGS['IMAGES_DIR'] + "boom.png").convert_alpha()
+		explosion = pygame.transform.scale(explosion, self.taille)
+		phraseMort = self.font.render(random.choice(self.deadPunchline ), True, (0,0,0))
+		while continuer:
+
+			for event in pygame.event.get():
+				if event.type == QUIT:     #Si un de ces événements est de type QUIT
+					continuer = False     #On arrête la boucle
+					sys.exit()
+				if event.type == KEYDOWN:
+					if event.key == K_RETURN:
+						continuer = False
+
+			self.afficherBack()
+			self.fenetre.blit(explosion, (0,0))
+
+			self.afficherVie(vaisseau)
+			self.afficherScore()
+
+			self.fenetre.blit(phraseMort, (int(self.taille[0]/2) - int(phraseMort.get_width()/2), int(self.taille[1]/2)))
+
+			pygame.display.flip()
