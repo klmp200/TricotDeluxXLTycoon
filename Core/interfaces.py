@@ -41,8 +41,6 @@ class Interface():
 
 	def pause(self):
 
-		pygame.time.Clock().tick(60)
-
 		self.musique.play(loops=-1, maxtime=0, fade_ms=0)
 		pygame.key.set_repeat(30, 30)
 
@@ -148,7 +146,9 @@ class Jeu(Interface):
 		Interface.pause(self)
 
 		continuer = True
+		clock = pygame.time.Clock()
 		while continuer:
+			clock.tick(60)
 			for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 				if event.type == QUIT:     #Si un de ces événements est de type QUIT
 					continuer = False     #On arrête la boucle

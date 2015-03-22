@@ -100,7 +100,7 @@ class Joueur(Vaisseau):
 
 	def __init__(self, taille=(0,0), image="", position=(0,0), SETTINGS={}, vitesse=10, pv=1):
 		Vaisseau.__init__(self, taille, image, position, SETTINGS, vitesse, pv)
-		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'wut.ogg')
+		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'wut.wav')
 
 	def checkMissiles(self, fenetre, tailleInterface, direction="left", victimes = []):
 		Vaisseau.checkMissiles(self, fenetre, tailleInterface, direction, victimes)
@@ -109,7 +109,7 @@ class Joueur(Vaisseau):
 		self.sonDeplacement.play()
 		Vaisseau.deplacer(self, interface, direction)
 
-	def tirer(self, son="piou.ogg", image="pizza.png"):
+	def tirer(self, son="piou.wav", image="pizza.png"):
 		Vaisseau.tirer(self, son, image)
 
 
@@ -119,7 +119,7 @@ class Ennemi(Vaisseau):
 	"""
 	def __init__(self, taille=(0,0), image="", position=(0,0), SETTINGS={}, vitesse=10, pv = 1):
 		Vaisseau.__init__(self, taille, image, position, SETTINGS, vitesse, pv)
-		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'la.ogg')
+		self.sonDeplacement = pygame.mixer.Sound(self.SETTINGS['SONS_DIR'] + 'la.wav')
 
 
 	def checkMissiles(self, fenetre, tailleInterface, direction="right", victimes = []):
@@ -129,7 +129,7 @@ class Ennemi(Vaisseau):
 		self.sonDeplacement.play()
 		Vaisseau.deplacer(self, interface, direction, origin)
 
-	def tirer(self, son="beeh.ogg", image="chat.png"):
+	def tirer(self, son="beeh.wav", image="chat.png"):
 		Vaisseau.tirer(self, son, image)
 
 	def action(self, interface):
