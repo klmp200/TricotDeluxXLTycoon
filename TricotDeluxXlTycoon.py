@@ -15,7 +15,7 @@ RESOLUTION = (1200, 800)
 
 
 # Importation des paramètres
-json_data=open(r'config.json', 'r')
+json_data=open(r'config.json', 'r', encoding="utf8")
 SETTINGS = json.load(json_data)
 json_data.close()
 

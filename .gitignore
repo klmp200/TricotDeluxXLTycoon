@@ -2,3 +2,4 @@ __pycache__
 *.sfk
 *.pyc
 .DS_Store
+/dist
