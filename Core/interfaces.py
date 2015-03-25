@@ -55,6 +55,28 @@ class menu(Interface):
 			(True, "Crédits", ["Réalisé et produit par :", "Antoine Bartuccio", "(KLMP200)", "klmp200.net"]),
 			(False, "Extra", ["Flappy Banana"]),
 		]
+	def pause(self):
+		Interface.pause(self)
+		
+		continuer = True
+		clock = pygame.time.Clock()
+		while continuer:
+			clock.tick(60)
+			for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
+				if event.type == QUIT:     #Si un de ces événements est de type QUIT
+					continuer = False     #On arrête la boucle
+					sys.exit()
+
+				if event.type == KEYDOWN:
+					if event.key == K_DOWN:
+						pass
+
+					if event.key == K_UP:
+						pass
+
+					if event.key == K_SPACE:
+						pass
+
 
 class Jeu(Interface):
 
