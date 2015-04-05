@@ -42,41 +42,128 @@ class Interface():
 	def pause(self):
 
 		self.musique.play(loops=-1, maxtime=0, fade_ms=0)
-		pygame.key.set_repeat(30, 30)
 
 		# Ajouter la boucle
 
-class menu(Interface):
+class Menu(Interface):
 
 	def __init__(self, taille=(640, 480), image="", titre="", icone="", SETTINGS={}, musique=""):
 		Interface.__init__(self, taille, image, titre, icone, SETTINGS, musique)
-		self.choix = [
-			(True, "Jouer", ["Facile", "Normal", "Hard", "Dubstep"]),
-			(True, "Crédits", ["Réalisé et produit par :", "Antoine Bartuccio", "(KLMP200)", "klmp200.net"]),
-			(False, "Extra", ["Flappy Banana"]),
+		self.menu_base = [
+			(True, "Jouer"),
+			(False, "Crédits"),
+			(False, "Extra"),
 		]
+		self.modes_jeu = [
+			(True, "Facile"),
+			(False, "Normal"),
+			(False, "Hard"),
+			(False, "Dubstep"),
+			(False, "Banana"),
+		]
+		self.credits = [
+			(False, "Réalisé et produit par :"),
+			(False, "Antoine Bartuccio"),
+			(False, "(KLMP200)"),
+			(False, "klmp200.net"),
+		]
+		self.extra = [
+			(True, "Flappy Banana")
+		]
+
+	def textMenu(self, liste):
+		title_color = (22, 150, 22)
+		main_color = (239, 119, 6)
+		selected_color = (255, 255, 255)
+
+		y = 0
+
+		text = self.font.render("Menu", True, title_color)
+		x = int(self.taille[0]/2) - int(text.get_width()/2)
+		self.fenetre.blit(text, (x,y))
+
+		y += text.get_height()*2
+		
+		for phrase in liste:
+			color = main_color
+			if phrase[0]:
+				color = selected_color
+
+			text = self.font.render(phrase[1], True, color)
+			x = int(self.taille[0]/2) - int(text.get_width()/2)
+			self.fenetre.blit(text, (x,y))
+			y += text.get_height()
+
+	def selectionMenu(self, direction, liste):
+		if direction != "":
+			s = 1
+			for phrase in liste:
+				if phrase[0]:
+					break
+				s += 1
+
+			if direction == "UP":
+				s = s-1
+			elif direction == "DOWN":
+				s = s+1
+
+			if s > len(liste):
+				s = len(liste)
+			elif s < 1:
+				s = 1
+
+			new_liste = []
+			p = 1
+			for phrase in liste:
+				if phrase[0]:
+					phrase = (False, phrase[1])
+				if p == s:
+					phrase = (True, phrase[1])
+				
+				new_liste.append(phrase)
+				p += 1
+			liste = new_liste
+
+		return liste
+
+
 	def pause(self):
 		Interface.pause(self)
-		
+		pygame.key.set_repeat()
+
+		# Initialisation menu
+		menu = self.menu_base
+
 		continuer = True
 		clock = pygame.time.Clock()
 		while continuer:
-			clock.tick(60)
+			clock.tick(10)
 			for event in pygame.event.get():   #On parcours la liste de tous les événements reçus
 				if event.type == QUIT:     #Si un de ces événements est de type QUIT
 					continuer = False     #On arrête la boucle
 					sys.exit()
 
+				direction = ""
+				validation = False
 				if event.type == KEYDOWN:
 					if event.key == K_DOWN:
-						pass
+						direction = "DOWN"
 
 					if event.key == K_UP:
+						direction = "UP"
+
+					if event.key == K_BACKSPACE:
 						pass
 
-					if event.key == K_SPACE:
-						pass
+					if event.key == K_RETURN:
+						validation = True
 
+			self.afficherBack()
+
+			menu = self.selectionMenu(direction, menu)
+			self.textMenu(menu)
+
+			pygame.display.flip()			
 
 class Jeu(Interface):
 
@@ -166,6 +253,7 @@ class Jeu(Interface):
 
 	def pause(self, vaisseau):
 		Interface.pause(self)
+		pygame.key.set_repeat(30, 30)
 
 		continuer = True
 		clock = pygame.time.Clock()

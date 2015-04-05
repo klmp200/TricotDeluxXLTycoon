@@ -22,7 +22,10 @@ json_data.close()
 
 pygame.init()
 
+menu = Menu(RESOLUTION, "main_menu_background.png", TITRE, ICONE, SETTINGS, "star_wars.wav")
+menu.pause()
 
+"""
 intro = Video('intro.mpg', SETTINGS, TITRE, ICONE, "2001_Odysee_de_l_espace.wav")
 intro.jouer()
 
@@ -34,3 +37,4 @@ banane.afficher(fenetre.fenetre)
 
 
 fenetre.pause(banane)
+"""
