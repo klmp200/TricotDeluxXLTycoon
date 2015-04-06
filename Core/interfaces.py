@@ -349,7 +349,7 @@ class Jeu(Interface):
 		continuer = True
 		explosion = pygame.image.load(self.SETTINGS['IMAGES_DIR'] + "boom.png").convert_alpha()
 		explosion = pygame.transform.scale(explosion, self.taille)
-		phraseMort = self.font.render(random.choice(self.deadPunchline ), True, (0,0,0))
+		phraseMort = self.font.render(random.choice(self.deadPunchline ), True, (255,255,255))
 		while continuer:
 
 			for event in pygame.event.get():
