@@ -50,25 +50,25 @@ class Menu(Interface):
 	def __init__(self, taille=(640, 480), image="", titre="", icone="", SETTINGS={}, musique=""):
 		Interface.__init__(self, taille, image, titre, icone, SETTINGS, musique)
 		self.menu_base = [
-			(True, "Jouer"),
-			(False, "Crédits"),
-			(False, "Extra"),
+			(True, "Jouer", (True, "modes_jeu")),
+			(False, "Extra", (True, "extra")),
+			(False, "Crédits", (True, "credits")),
 		]
 		self.modes_jeu = [
-			(True, "Facile"),
-			(False, "Normal"),
-			(False, "Hard"),
-			(False, "Dubstep"),
-			(False, "Banana"),
+			(True, "Facile", (False, "end")),
+			(False, "Normal", (False, "end")),
+			(False, "Hard", (False, "end")),
+			(False, "Dubstep", (False, "end")),
+			(False, "Banana", (False, "end")),
 		]
 		self.credits = [
-			(False, "Réalisé et produit par :"),
-			(False, "Antoine Bartuccio"),
-			(False, "(KLMP200)"),
-			(False, "klmp200.net"),
+			(False, "Réalisé et produit par :", (False, "non")),
+			(False, "Antoine Bartuccio", (False, "non")),
+			(False, "(KLMP200)", (False, "non")),
+			(False, "klmp200.net", (False, "non")),
 		]
 		self.extra = [
-			(True, "Flappy Banana")
+			(True, "Flappy Banana", (False, "end"))
 		]
 
 	def textMenu(self, liste):
@@ -116,15 +116,39 @@ class Menu(Interface):
 			p = 1
 			for phrase in liste:
 				if phrase[0]:
-					phrase = (False, phrase[1])
+					phrase = (False, phrase[1], phrase[2])
 				if p == s:
-					phrase = (True, phrase[1])
+					phrase = (True, phrase[1], phrase[2])
 				
 				new_liste.append(phrase)
 				p += 1
 			liste = new_liste
 
 		return liste
+
+	def validerMenu(self, validation, menu):
+		sortie = ""
+		continuer = True
+		if validation:
+			for phrase in menu:
+				if phrase[0] and phrase[2][0]:
+					if phrase[2][1] == "modes_jeu":
+						menu = self.modes_jeu
+					elif phrase[2][1] == "credits":
+						menu = self.credits
+					elif phrase[2][1] == "extra":
+						menu = self.extra
+				if phrase[0] and not phrase[2][0]:
+					if phrase[2][1] == "end":
+						sortie = phrase[1]
+						continuer = False
+
+		return (menu, continuer, sortie)
+
+	def retourMenu(self, retour, menu):
+		if retour:
+			menu = self.menu_base
+		return menu
 
 
 	def pause(self):
@@ -133,6 +157,7 @@ class Menu(Interface):
 
 		# Initialisation menu
 		menu = self.menu_base
+		sortie = ""
 
 		continuer = True
 		clock = pygame.time.Clock()
@@ -145,6 +170,7 @@ class Menu(Interface):
 
 				direction = ""
 				validation = False
+				retour = False
 				if event.type == KEYDOWN:
 					if event.key == K_DOWN:
 						direction = "DOWN"
@@ -153,9 +179,9 @@ class Menu(Interface):
 						direction = "UP"
 
 					if event.key == K_BACKSPACE:
-						pass
+						retour = True
 
-					if event.key == K_RETURN:
+					if event.key == K_RETURN or event.key == K_SPACE:
 						validation = True
 
 			self.afficherBack()
@@ -163,7 +189,13 @@ class Menu(Interface):
 			menu = self.selectionMenu(direction, menu)
 			self.textMenu(menu)
 
-			pygame.display.flip()			
+			(menu, continuer, sortie) = self.validerMenu(validation, menu)
+			menu = self.retourMenu(retour, menu)
+
+			pygame.display.flip()
+
+		self.musique.stop()
+		return sortie	
 
 class Jeu(Interface):
 
@@ -180,6 +212,10 @@ class Jeu(Interface):
 		self.score = 0
 
 		self.liste_ennemies = []
+		self.limite = 3
+
+		self.ennemiImage = "mouton.png"
+		self.ennemiMissileImage = "chat.png"
 
 		self.punchline = SETTINGS['PUNCHLINES']
 		for punchline in self.punchline:
@@ -216,11 +252,13 @@ class Jeu(Interface):
 		self.fenetre.blit(text, (int(self.taille[0]/2),0))
 
 	def generateEnnemi(self):
-		limite = 3
+		limite = self.limite
 		aleatoire1 = random.randint(1,60)
 		aleatoire2 = random.randint(1,100)
 		if aleatoire2 < aleatoire1 and len(self.liste_ennemies) < limite:
-			self.liste_ennemies.append(Ennemi((200,100), "mouton.png", (random.randint(int(self.taille[1]/2),self.taille[1]+200),random.randint(0,self.taille[0]-100)), self.SETTINGS))
+			ennemi = Ennemi((200,100), self.ennemiImage, (random.randint(int(self.taille[1]/2),self.taille[1]+200),random.randint(0,self.taille[0]-100)), self.SETTINGS)
+			ennemi.imageMissile = self.ennemiMissileImage
+			self.liste_ennemies.append(ennemi)
 
 	def afficherEnnemi(self):
 		for ennemi in self.liste_ennemies:
