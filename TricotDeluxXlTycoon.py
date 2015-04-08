@@ -58,6 +58,15 @@ elif sortie == "Banana":
 	fenetre.ennemiMissileImage = "banane.png"
 
 	banane.imageMissile = "banane.png"
+elif sortie == "Poulet":
+	fenetre = Jeu(RESOLUTION, "rainbow.jpg", TITRE, ICONE, SETTINGS, 'my_little_chicken.wav')
+	fenetre.limite = 10
+
+	fenetre.ennemiImage = "colonel.png"
+	fenetre.ennemiMissileImage = "police.png"
+
+	banane = Joueur((200,100), "charles.png", (0,int(fenetre.taille[1]/2-100)), SETTINGS, vitesse=20, pv = 10)
+	banane.imageMissile = "poulet.png"
 
 banane.afficher(fenetre.fenetre)
 fenetre.pause(banane)

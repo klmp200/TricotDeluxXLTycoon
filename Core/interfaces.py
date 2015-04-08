@@ -60,6 +60,7 @@ class Menu(Interface):
 			(False, "Hard", (False, "end")),
 			(False, "Dubstep", (False, "end")),
 			(False, "Banana", (False, "end")),
+			(False, "Poulet", (False, "end")),
 		]
 		self.credits = [
 			(False, "Réalisé et produit par :", (False, "non")),
