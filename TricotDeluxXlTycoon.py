@@ -67,6 +67,10 @@ elif sortie == "Poulet":
 
 	banane = Joueur((200,100), "charles.png", (0,int(fenetre.taille[1]/2-100)), SETTINGS, vitesse=20, pv = 10)
 	banane.imageMissile = "poulet.png"
+	"""
+	Mettre que ce mode de jeu est inspiré de faits réels et qu'aucun noir n'a été blessé pendant le tournage
+	surement utiliser la classe interface ou un objet issu de l'interface pour afficher un message
+	"""
 
 banane.afficher(fenetre.fenetre)
 fenetre.pause(banane)
