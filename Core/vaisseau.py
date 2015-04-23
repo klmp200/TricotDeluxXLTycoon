@@ -206,3 +206,43 @@ class Missile():
 				victime.mort(fenetre)
 				self.vie = False
 				break
+
+class Modificateur():
+	def __init__(self, position=(0,0), pv=0, vitesse=0, vitesseMissile=0, image=""):
+		self.pv = pv
+		self.vitesse = vitesse
+		self.vitesseMissile = vitesseMissile
+
+		self.position = position
+		self.taille = (42, 36)
+		self.image = image
+
+		self.vie = True
+
+		self.modificateur = pygame.image.load(self.image).convert_alpha()
+		self.modificateur = pygame.transform.scale(self.modificateur, self.taille)
+
+	def modification(self, vaisseau):
+		vaisseau.pv += self.pv
+		vaisseau.vitesse += self.vitesse
+
+		missiles = []
+		for missile in vaisseau.missiles:
+			missile = missile.vitesse + self.vitesseMissile
+			missiles.append(missile)
+		vaisseau.modification = missiles
+
+	def afficher(self, fenetre, vaisseau, position=""):
+		x = self.position[0]
+		y = self.position[1]
+		if position != "":
+			self.position = position
+
+		rect_modificateur = pygame.Rect(x, y, self.taille[0], self.taille[1])
+		rect_vaisseau = pygame.Rect(vaisseau.position[0], vaisseau.position[1], vaisseau.taille[0], vaisseau.taille[1])
+
+		if rect_modificateur.colliderect(rect_vaisseau):
+			self.modification(vaisseau)
+			self.vie = False
+
+		fenetre.blit(self.modificateur, self.position)

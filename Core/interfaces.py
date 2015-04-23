@@ -4,7 +4,7 @@ import random
 import time
 import sys
 from pygame.locals import *
-from Core.vaisseau import Ennemi
+from Core.vaisseau import Ennemi, Modificateur
 
 class Interface():
 
@@ -215,6 +215,9 @@ class Jeu(Interface):
 		self.liste_ennemies = []
 		self.limite = 3
 
+		self.liste_modificateurs = []
+		self.limite_modificateurs = 2
+
 		self.ennemiImage = "mouton.png"
 		self.ennemiMissileImage = "chat.png"
 
@@ -289,6 +292,44 @@ class Jeu(Interface):
 			pygame.display.flip()
 			time.sleep(1)
 
+	def generateModificateur(self):
+		limite = self.limite_modificateurs
+		pv = 0
+		vitesse = 0
+		vitesseMissile = 0
+
+		chance = random.randint(0, 10)
+		if chance < 4:
+			# Bonus
+			image = self.SETTINGS['IMAGES_DIR']+"bonus.png"
+			pv = random.randint(0, 3)
+			vitesse = random.randint(0, 10)
+			vitesseMissile = random.randint(0, 10)
+		else:
+			# Malus
+			image = self.SETTINGS['IMAGES_DIR']+"malus.png"
+			pv = random.randint(0, 3)*(-1)
+			vitesse = random.randint(0, 10)*(-1)
+			vitesseMissile = random.randint(0, 10)*(-1)
+
+		if len(self.liste_modificateurs) < limite:
+			position = (random.randint(0,int(self.taille[1]/2)),random.randint(0,self.taille[0]-100))
+			modificateur = Modificateur(position=position, image=image, pv=pv, vitesse=vitesse, vitesseMissile=vitesseMissile)
+			self.liste_modificateurs.append(modificateur)
+
+	def afficherModificateur(self, vaisseau):
+		for modificateur in self.liste_modificateurs:
+			modificateur.afficher(self.fenetre, vaisseau)
+
+	def supprimerModificateur(self):
+		i = 0
+		to_pop = []
+		for modificateur in self.liste_modificateurs:
+				if modificateur.vie == False:
+					to_pop.append(i)
+				i += 1
+		for crap in to_pop:
+			self.liste_modificateurs.pop(crap)
 
 	def pause(self, vaisseau):
 		Interface.pause(self)
@@ -329,6 +370,7 @@ class Jeu(Interface):
 
 			self.afficherBack()
 			self.generateEnnemi()
+			self.generateModificateur()
 
 			vaisseau.afficher(self.fenetre)
 			self.bougerBords()
@@ -336,11 +378,13 @@ class Jeu(Interface):
 			self.afficherScore()
 
 			self.afficherEnnemi()
+			self.afficherModificateur(vaisseau)
 			self.actionEnnemi()
 			self.tirerEnnemi(vaisseau)
 
 			vaisseau.checkMissiles(self.fenetre, self.taille, victimes = self.liste_ennemies)
 			self.supprimerEnnemi()
+			self.supprimerModificateur()
 
 			pygame.display.flip()
 
