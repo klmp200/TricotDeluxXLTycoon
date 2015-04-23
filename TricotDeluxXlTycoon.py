@@ -56,6 +56,8 @@ elif sortie == "Banana":
 
 	fenetre.ennemiImage = "banane.png"
 	fenetre.ennemiMissileImage = "banane.png"
+	fenetre.bonus_image = "banane.png"
+	fenetre.malus_image = "banane.png"
 
 	banane.imageMissile = "banane.png"
 elif sortie == "Poulet":

@@ -217,6 +217,8 @@ class Jeu(Interface):
 
 		self.liste_modificateurs = []
 		self.limite_modificateurs = 2
+		self.bonus_image = "bonus.png"
+		self.malus_image = "malus.png"
 
 		self.ennemiImage = "mouton.png"
 		self.ennemiMissileImage = "chat.png"
@@ -301,13 +303,13 @@ class Jeu(Interface):
 		chance = random.randint(0, 10)
 		if chance < 4:
 			# Bonus
-			image = self.SETTINGS['IMAGES_DIR']+"bonus.png"
+			image = self.SETTINGS['IMAGES_DIR'] + self.bonus_image
 			pv = random.randint(0, 3)
 			vitesse = random.randint(0, 10)
 			vitesseMissile = random.randint(0, 10)
 		else:
 			# Malus
-			image = self.SETTINGS['IMAGES_DIR']+"malus.png"
+			image = self.SETTINGS['IMAGES_DIR'] + self.malus_image
 			pv = random.randint(0, 3)*(-1)
 			vitesse = random.randint(0, 10)*(-1)
 			vitesseMissile = random.randint(0, 10)*(-1)
