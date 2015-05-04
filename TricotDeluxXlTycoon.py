@@ -73,6 +73,10 @@ elif sortie == "Poulet":
 	Mettre que ce mode de jeu est inspiré de faits réels et qu'aucun noir n'a été blessé pendant le tournage
 	surement utiliser la classe interface ou un objet issu de l'interface pour afficher un message
 	"""
+elif sortie == "Entrainement":
+	fenetre = Jeu(RESOLUTION, "graph.png", TITRE, ICONE, SETTINGS, 'eye_of_the_tiger.wav')
+	fenetre.limite = 0
+
 
 banane.afficher(fenetre.fenetre)
 fenetre.pause(banane)

@@ -69,7 +69,8 @@ class Menu(Interface):
 			(False, "klmp200.net", (False, "non")),
 		]
 		self.extra = [
-			(True, "Flappy Banana", (False, "end"))
+			(True, "Flappy Banana", (False, "end")),
+			(False, "Entrainement", (False, "end")),
 		]
 
 	def textMenu(self, liste):
@@ -416,3 +417,7 @@ class Jeu(Interface):
 			self.fenetre.blit(phraseMort, (int(self.taille[0]/2) - int(phraseMort.get_width()/2), int(self.taille[1]/2)))
 
 			pygame.display.flip()
+
+class Message(Interface):
+	def pause():
+		pass
