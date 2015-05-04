@@ -419,5 +419,23 @@ class Jeu(Interface):
 			pygame.display.flip()
 
 class Message(Interface):
-	def pause():
-		pass
+	def pause(self, message):
+		continuer = True
+		clock = pygame.time.Clock()
+		while continuer:
+			clock.tick(10)
+
+			for event in pygame.event.get():
+				if event.type == KEYDOWN:
+					continuer = False
+				elif event.type == pygame.QUIT:
+					continuer = False
+					sys.exit() 
+
+
+			self.afficherBack()
+
+			text = self.font.render(message, True, (255, 255, 255))
+			self.fenetre.blit(text, (0,0))
+			pygame.display.flip()
+

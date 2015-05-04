@@ -34,12 +34,20 @@ fenetre = Jeu(RESOLUTION, "saucisses.jpg", TITRE, ICONE, SETTINGS, 'retour_futur
 #Chargement de la banane
 banane = Joueur((200,100), "banane.png", (0,int(fenetre.taille[1]/2-100)), SETTINGS, vitesse=20, pv = 10)
 
+message_avert = Message(RESOLUTION, "espace.jpg", TITRE, ICONE, SETTINGS, 'retour_futur.wav')
+
+message = ""
 if sortie == "Facile":
 	fenetre.limite = 3
+	message = "Petite fille"
 elif sortie == "Normal":
 	fenetre.limite = 10
+	message = "Retourne en mode facile sale merde"
+
 elif sortie == "Hard":
 	fenetre.limite = 40
+	message = "T'as cru que t'êtais un thug ?"
+
 elif sortie == "Dubstep":
 	fenetre = Jeu(RESOLUTION, "espace.jpg", TITRE, ICONE, SETTINGS, 'hight_quality_dubstep.wav')
 	fenetre.limite = 666
@@ -49,6 +57,8 @@ elif sortie == "Dubstep":
 
 	banane = Joueur((200,100), "doritos.png", (0,int(fenetre.taille[1]/2-100)), SETTINGS, vitesse=20, pv = 10)
 	banane.imageMissile = "doritos_chips.png"
+
+	message = "Inspiré de faits réels"
 
 elif sortie == "Banana":
 	fenetre = Jeu(RESOLUTION, "banana_back.jpg", TITRE, ICONE, SETTINGS, 'banana.wav')
@@ -60,6 +70,9 @@ elif sortie == "Banana":
 	fenetre.malus_image = "banane.png"
 
 	banane.imageMissile = "banane.png"
+
+	message = "Banana ?"
+
 elif sortie == "Poulet":
 	fenetre = Jeu(RESOLUTION, "rainbow.jpg", TITRE, ICONE, SETTINGS, 'my_little_chicken.wav')
 	fenetre.limite = 10
@@ -69,13 +82,16 @@ elif sortie == "Poulet":
 
 	banane = Joueur((200,100), "charles.png", (0,int(fenetre.taille[1]/2-100)), SETTINGS, vitesse=20, pv = 10)
 	banane.imageMissile = "poulet.png"
-	"""
-	Mettre que ce mode de jeu est inspiré de faits réels et qu'aucun noir n'a été blessé pendant le tournage
-	surement utiliser la classe interface ou un objet issu de l'interface pour afficher un message
-	"""
+
+	message = "Toute ressemblance est fortuite"
+
 elif sortie == "Entrainement":
 	fenetre = Jeu(RESOLUTION, "graph.png", TITRE, ICONE, SETTINGS, 'eye_of_the_tiger.wav')
 	fenetre.limite = 0
+
+	message = "Vas-y rocky !!"
+
+message_avert.pause(message)
 
 
 banane.afficher(fenetre.fenetre)
