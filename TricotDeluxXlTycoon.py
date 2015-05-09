@@ -91,6 +91,11 @@ elif sortie == "Entrainement":
 
 	message = "Vas-y rocky !!"
 
+elif sortie == "Flappy Banana":
+	message = "Prochainement en DLC"
+	message_avert.pause(message)
+	sys.exit() 
+
 message_avert.pause(message)
 
 

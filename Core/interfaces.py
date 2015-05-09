@@ -436,6 +436,6 @@ class Message(Interface):
 			self.afficherBack()
 
 			text = self.font.render(message, True, (255, 255, 255))
-			self.fenetre.blit(text, (0,0))
+			self.fenetre.blit(text, (int(self.taille[0]/2) - int(text.get_width()/2), int(self.taille[1]/2)))
 			pygame.display.flip()
 
