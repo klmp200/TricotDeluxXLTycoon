@@ -8,3 +8,5 @@ Un titre imanquable auquel il faut jouer d'urgence."
 Ce jeu est écrit en pyhon3 et nécessite pygames
 Ce jeu a été crée pour l'occasion de "Make Something Horrible 2015" http://itch.io/jam/make-something-horrible-2015 organisé par CanardPC
 C'est une vaste blgue, merci de ne rien prendre au serieux.
+
+Page du jeu : http://klmp200.itch.io/tricot-delux-xl-tycoon
